@@ -1,0 +1,33 @@
+{
+  "name": "backend-planbuddy",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "contributors": [
+    "Jannis Thiel",
+    "Tristan Kechlo"
+  ],
+  "main": "app/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "start-dev": "nodemon -L src/index.js --inspect=0.0.0.0:9229",
+    "start-dev-debug": "nodemon src/index.js --inspect-brk=0.0.0.0:9229",
+    "test": "jest --detectOpenHandles --forceExit --ci --verbose"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.14",
+    "mariadb": "^2.5.5",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
+  }
+}

@@ -1,0 +1,18 @@
+.leaderboard-entry {
+    background: $planbuddy-blue;
+    background: linear-gradient(90deg, $planbuddy-blue 42%, #135082 100%);
+    padding: 2px 40px;
+    margin: 30px 50px;
+    border-radius: 10px;
+}
+
+.username {
+    font-weight: 600;
+    color: $white;
+}
+
+.xp {
+    float: right;
+    font-weight: 600;
+    color: $white;
+} 

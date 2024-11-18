@@ -1,0 +1,13 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $main-font;
+    background-color: $white;
+    margin: 3rem;
+}
+
+h1, h2 {
+    color: $heading-color;
+}

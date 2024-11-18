@@ -1,0 +1,293 @@
+.timer-wrapper {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(90deg, var(--background-gradient-stop-1) 0%, var(--background-gradient-stop-2) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $white;
+}
+
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 350px;
+  background-color: var(--timer-background-color);
+  color: var(--text);
+  padding: 2.5em 2em;
+  border-radius: 50px;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072), -2px 17px 33.4px rgba(0, 0, 0, 0.086), 1px 7px 20px 2px rgba(0, 0, 0, 0.12);
+
+  &__label {
+    z-index: 3;
+    color: $white;
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 15px;
+    line-height: 1;
+    position: relative;
+  }
+
+  &__time {
+    margin: 0;
+    margin-bottom: 0.3em;
+    font-size: 50px;
+    line-height: 1;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+    color: $white;
+
+    &::after {
+      content: '';
+      background: linear-gradient(90deg, var(--background-gradient-stop-1) 0%, var(--background-gradient-stop-2) 100%);
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+  }
+
+  &__controllers {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__maintitle {
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
+  }
+}
+
+[data-theme='dark'] {
+  .timer {
+    &__time {
+      &::after {
+        box-shadow: -1px 1px 24px 2px var(--timercircle-dark-box-shadow-color);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .timer {
+    width: auto;
+    min-width: unset;
+    margin: 0 auto;
+    padding: 2em 1.5em;
+  }
+}
+
+.session {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+    }
+
+    &__length {
+        font-size: 26px;
+        line-height: 1;
+        font-weight: 400;
+        padding: 0 0.4em;
+        min-width: 27px;
+    }
+
+    &__label {
+        font-weight: 600;
+    }
+}
+
+.break {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+    }
+
+    &__length {
+        font-size: 26px;
+        line-height: 1;
+        font-weight: 400;
+        padding: 0 0.4em;
+        min-width: 27px;
+    }
+
+    &__label {
+        font-weight: 600;
+    }
+}
+
+.controls {
+    &__wrp {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2em;
+        z-index: 3;
+
+        button {
+            padding: 1.5em 1.6em;
+
+            svg {
+                font-size: 1.2em;
+            }
+        }
+    }
+}
+
+.theme-toggler {
+    position: absolute;
+    top: 5vw;
+    right: 5vw;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    border: 4px solid $white;
+    border-radius: 34px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        &:checked + .theme-toggler__slider {
+            background-color: var(--background-gradient-stop-2);
+        }
+
+        &:checked + .theme-toggler__slider:before {
+            transform: translateX(26px);
+        }
+
+        &:focus + .theme-toggler__slider {
+            box-shadow: 0 0 1px var(--background-gradient-stop-2);
+        }
+    }
+
+    &__slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--background-gradient-stop-2);
+        transition: 0.4s;
+    
+        &:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: $white;
+            transition: 0.4s;
+        }
+
+        &.round {
+            border-radius: 34px;
+        
+            &:before {
+                border-radius: 50%;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .theme-toggler {
+        top: 2vw;
+        right: 2vw;
+    }
+}
+
+root {
+    --text: #{$gradient-stop-1};
+    --box-shadow-color: #{$box-shadow-color};
+    --timer-background-color: #{$white};
+    --button-background-color: #{$white};
+    --button-color: #{$gradient-stop-1};
+    --background-gradient-stop-1: #{$gradient-stop-1};
+    --background-gradient-stop-2: #{$gradient-stop-2};
+    --timercircle-dark-box-shadow-color: #{$timercircle-dark-box-shadow-color};
+}
+
+[data-theme='light'] {
+    --background-gradient-stop-1: #{$gradient-stop-1};
+    --background-gradient-stop-2: #{$gradient-stop-2};
+    --timer-background-color: #{$white};
+    --button-background-color: #{$white};
+    --button-color: #{$gradient-stop-1};
+    --text: #{$gradient-stop-1};
+    --box-shadow-color: #{$box-shadow-color};
+}
+
+
+.timer-btn {
+    appearance: none;
+    box-shadow: none;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0.8em 0.9em;
+    margin: 0.5em;
+    border-radius: 50%;
+    background-color: var(--button-background-color);
+    color: var(--button-color);
+    box-shadow: 0 2.8px 2.2px var(--box-shadow-color), 0 6.7px 5.3px var(--box-shadow-color), 0 12.5px 10px var(--box-shadow-color), 0 22.3px 17.9px var(--box-shadow-color), -2px 17px 33.4px var(--box-shadow-color), 1px 7px 20px 2px var(--box-shadow-color);
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        box-shadow: none;
+
+        svg {
+            color: grey;
+        }
+    }
+
+    svg {
+        pointer-events: none
+    }
+}
+
+.timer-home-icon {
+    font-size: 3em; 
+    color: $white;
+    z-index: 4;
+    position: absolute;
+    right: 100px;
+    cursor: pointer;
+}

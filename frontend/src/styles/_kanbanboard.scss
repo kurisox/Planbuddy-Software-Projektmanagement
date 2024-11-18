@@ -1,0 +1,94 @@
+.card {
+    background-color: $white;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    width: 20rem;
+}
+  
+.actions {
+    text-align: right;
+}
+  
+.modal {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    background-color: $white;
+    padding: 1rem;
+    text-align: center;
+    width: 30rem;
+    z-index: 10;
+    position: fixed;
+    top: 20vh;
+    left: calc(50% - 15rem);
+}
+  
+.backdrop {
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.Board {
+    font-family: sans-serif;
+    white-space: nowrap;
+    margin-top: 150px;
+}
+
+.Column {
+    display: inline-block;
+    vertical-align: top;
+    width: 500px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-right: 25px;
+    background: #808e9e;
+    color: $planbuddy-blue;
+}
+
+.Column__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.Card {
+    padding: 15px;
+    background: $planbuddy-blue;
+    color: #f4fffd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: move;
+}
+
+.Card--spacer,
+.Card--dragging {
+    opacity: 0;
+}
+
+.Card__title {
+    font-size: 18px;
+    margin: 4px;
+}
+
+.Card__delete {
+    float: right;
+    cursor: pointer;
+}
+
+.TextField {
+    font-size: 12px;
+    color: #a7a2a2
+}
+
+.Card__workload {
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    float: left;
+}

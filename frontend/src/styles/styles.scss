@@ -1,0 +1,11 @@
+// Import variables
+@import 'variables.scss';
+
+// Import global styles
+@import 'global.scss';
+
+// Import custom components
+@import '_kanbanboard.scss';
+@import '_leaderBoard.scss';
+@import '_learnButton.scss';
+@import '_timer.scss';

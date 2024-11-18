@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      args:
+      - NODE_ENV=delevopment
+      context: backend
+    command: npm run start-dev
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./backend/.env
+    ports:
+      - 80:80
+      - 9229:9229
+      - 9230:9230
+    secrets:
+      - db-password
+    volumes:
+      - ./backend/src:/app/src:ro
+      - ./backend/package.json:/app/package.json
+      - ./backend/package-lock.json:/app/package-lock.json
+    networks:
+      - backend-frontend
+      - database-backend
+    depends_on:
+      - db
+  db:
+    container_name: db 
+    # mariadb image supports both amd64 & arm64 architecture & stays open source
+    image: mariadb:10.7.1-focal
+    # mysql
+    # image: mysql:8.0.27
+    command: '--default-authentication-plugin=mysql_native_password'
+    secrets:
+      - db-password
+    # no volume mount on host
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/pb-create.sql:/docker-entrypoint-initdb.d/pb-create.sql
+    networks:
+      - database-backend
+    environment:
+      - MYSQL_DATABASE=planbuddy
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/package.json:/app/package.json
+      - ./frontend/package-lock.json:/app/package-lock.json
+    networks:
+      - backend-frontend
+    depends_on:
+      - backend
+  swagger:
+    container_name: swagger
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8080:8080
+    hostname: swagger
+    volumes:
+      - ./doc/swagger-api.yaml:/swagger-api.yaml
+    environment:
+      - SWAGGER_JSON=/swagger-api.yaml
+    networks:
+      - backend-frontend
+networks:
+  backend-frontend:
+  database-backend:
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: db/password.txt

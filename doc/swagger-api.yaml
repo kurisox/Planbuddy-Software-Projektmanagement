@@ -1,0 +1,1268 @@
+openapi: 3.0.1
+info:
+  title: Planbuddy API
+  description: Planbuddy API description
+  version: 1.0.0
+externalDocs:
+  description: Github-Repository
+  url: https://github.com/jt128/Software-Projektmanagement
+servers:
+- url: http://localhost:80/
+tags:
+- name: user
+  description: Everything about the users
+- name: course
+  description: Everything about the courses
+- name: event
+  description: Everything about the events
+- name: todo
+  description: Everything about the todos
+- name: degreeprogram
+  description: Everything about the degree programs
+paths:
+  /user:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - user
+      summary: get all users
+      operationId: getAllUsers
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /noauth/register:
+    post:
+      tags:
+      - user
+      summary: create a new user
+      operationId: createUser
+      requestBody:
+        description: user object that needs to be added
+        content:
+          application/json:
+            schema:
+              required:
+              - USERNAME
+              - EMAIL
+              - PASSWORT
+              type: object
+              properties:
+                USERNAME:
+                  type: string
+                EMAIL:
+                  type: string
+                  format: email
+                PASSWORT:
+                  type: string
+                  format: password
+        required: true
+      responses:
+        200:
+          description: user was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /noauth/login:
+    post:
+      tags:
+      - user
+      summary: login user
+      operationId: loginUser
+      requestBody:
+        description: login data
+        content:
+          application/json:
+            schema:
+              required:
+              - EMAIL
+              - PASSWORT
+              type: object
+              properties:
+                EMAIL:
+                  type: string
+                  format: email
+                  example: "planbuddy@gmail.com"
+                PASSWORT:
+                  type: string
+                  example: "123PLANbuddy#"
+        required: true
+      responses:
+        200:
+          description: user was logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /user/top/{number}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - user
+      summary: get x amount of users with the most XP
+      description: for example top10 or top20
+      operationId: topUsers
+      parameters:
+      - name: number
+        in: path
+        description: how many users you want to get
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - user
+      summary: find a specific user by id
+      operationId: findUserById
+      parameters:
+      - name: id
+        in: path
+        description: the userid you want to search for
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+    put:
+      security:
+        - jwtAuth: []
+      tags:
+      - user
+      summary: update a specific user provided by an id
+      description: This can only be done by the logged in user.
+      operationId: updateUserById
+      parameters:
+      - name: id
+        in: path
+        description: the userid you want to update
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: user object that needs to be updated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_STUDIENGANG:
+                  type: integer
+                EMAIL:
+                  type: string
+                  format: email
+                PASSWORT:
+                  type: string
+                  format: password
+                XP:
+                  type: integer
+                ROLLE:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - user
+      summary: delete a specific user provided by an id
+      description: This can only be done by the logged in user.
+      operationId: deleteUserById
+      parameters:
+      - name: id
+        in: path
+        description: the userid you want to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+  /course:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: Get all courses
+      operationId: getCourses
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: Create new course
+      operationId: createCourse
+      requestBody:
+        description: Created course object
+        content:
+          application/json:
+            schema:
+              required:
+              - NAME
+              - SEMESTER
+              type: object
+              properties:
+                ID_STUDIENGANG:
+                  type: integer
+                NAME:
+                  type: string
+                SEMESTER:
+                  type: integer
+                CP:
+                  type: number
+                  format: double
+        required: true
+      responses:
+        200:
+          description: course created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /course/user/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: get all courses for a specific user
+      operationId: getCoursesByUser
+      parameters:
+      - name: id
+        in: path
+        description: the id of the user
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+  /course/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: Get a course by ID
+      operationId: getCourse
+      parameters:
+      - name: id
+        in: path
+        description: User that gets returned
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: course not found
+          content: {}
+    put:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: Update course
+      description: This can only be done by the logged in user.
+      operationId: updateCourse
+      parameters:
+      - name: id
+        in: path
+        description: course that need to be updated
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Updated course object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_STUDIENGANG:
+                  type: integer
+                NAME:
+                  type: string
+                SEMESTER:
+                  type: integer
+                CP:
+                  type: number
+                  format: double
+        required: true
+      responses:
+        200:
+          description: course updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Course not found
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: Delete course
+      description: This can only be done by the logged in user.
+      operationId: deleteCourse
+      parameters:
+      - name: id
+        in: path
+        description: The course that needs to be deleted
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: course not found
+          content: {}
+  /course/{courseID}/addUser/:
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: add a user to a course
+      operationId: addUserToCourse
+      parameters:
+      - name: courseID
+        in: path
+        description: the course where the user should be added to
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: needs to provide the user id
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ID_USER
+              properties:
+                ID_USER:
+                  type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: no permission to do this, wrong user provided
+        404:
+          description: course not found
+  /course/{courseID}/removeUser/{userID}:
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - course
+      summary: remove a user from a course
+      description: This can only be done by the logged in user.
+      operationId: removeUserFromCourse
+      parameters:
+      - name: courseID
+        in: path
+        description: The course where the user should be removed from
+        required: true
+        schema:
+          type: integer
+      - name: userID
+        in: path
+        description: the user that should be removed from the course
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: course not found
+  /event:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: get all Events
+      operationId: getEvents
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: add a new event
+      operationId: addEvent
+      requestBody:
+        description: Create event object
+        content:
+          application/json:
+            schema:
+              required:
+              - START_DATUM_UHRZEIT
+              - END_DATUM_UHRZEIT
+              - NAME
+              - OEFFENTLICH
+              type: object
+              properties:
+                ID_FACH:
+                  type: integer
+                START_DATUM_UHRZEIT:
+                  type: string
+                  example: "2021-12-01 17:30:00"
+                END_DATUM_UHRZEIT:
+                  type: string
+                  example: "2021-12-01 19:30:00"
+                NAME:
+                  type: string
+                TYP:
+                  type: string
+                OEFFENTLICH:
+                  type: boolean
+                NOTIZ:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /event/public:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: get all Public Events
+      operationId: getPublicEvents
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /event/user/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: get all events for a specific user
+      operationId: getEventsByUser
+      parameters:
+      - name: id
+        in: path
+        description: the id of the user
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+  /event/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: get an event by id
+      operationId: getEvent
+      parameters:
+      - name: id
+        in: path
+        description: Event that gets returned
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: event not found
+          content: {}
+    put:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: Update event
+      description: This can only be done by the logged in user.
+      operationId: updateEvent
+      parameters:
+      - name: id
+        in: path
+        description: event that need to be updated
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Updated event object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_FACH:
+                  type: integer
+                START_DATUM_UHRZEIT:
+                  type: string
+                  example: "2021-12-01 17:30:00"
+                END_DATUM_UHRZEIT:
+                  type: string
+                  example: "2021-12-01 17:30:00"
+                NAME:
+                  type: string
+                TYP:
+                  type: string
+                OEFFENTLICH:
+                  type: boolean
+                NOTIZ:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: event updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Course not found
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: Delete event
+      description: This can only be done by the logged in user.
+      operationId: deleteEvent
+      parameters:
+      - name: id
+        in: path
+        description: The event that needs to be deleted
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Course not found
+          content: {}
+  /event/{eventID}/addUser/:
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: add a user to an event
+      operationId: addUserToEvent
+      parameters:
+      - name: eventID
+        in: path
+        description: the event where the user should be added to
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: needs to provide the user id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_USER:
+                  type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: not allowed, event is not public or no permission
+        404:
+          description: event not found
+  /event/{eventID}/removeUser/{userID}:
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - event
+      summary: remove a user from an event
+      description: This can only be done by the logged in user.
+      operationId: removeUserFromEvent
+      parameters:
+      - name: eventID
+        in: path
+        description: The event where the user should be removed from
+        required: true
+        schema:
+          type: integer
+      - name: userID
+        in: path
+        description: the user that should be removed from the event
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: no permission, or when user is owner of event(use delete event instead)
+        404:
+          description: event not found
+  /todo:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: get all todos
+      operationId: getAllTodos
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: create a new todo
+      operationId: createTodo
+      requestBody:
+        description: todo object that needs to be added
+        content:
+          application/json:
+            schema:
+              required:
+              - NAME
+              - OEFFENTLICH
+              type: object
+              properties:
+                ID_FACH:
+                  type: integer
+                NAME:
+                  type: string
+                ERLEDIGT:
+                  type: boolean
+                WORKLOAD:
+                  type: integer
+                DATUM:
+                  type: string
+                  example: "2021-12-01 17:24:33"
+                TYP:
+                  type: string
+                OEFFENTLICH:
+                  type: boolean
+                NOTIZ:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: Todo created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /todo/user/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: get all todos for a specific user
+      operationId: getTodosByUser
+      parameters:
+      - name: id
+        in: path
+        description: the id of the user
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: user not found
+          content: {}
+  /todo/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: find a specific todo by id
+      operationId: findTodoById
+      parameters:
+      - name: id
+        in: path
+        description: the todo you want to search for
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: todo not found
+          content: {}
+    put:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: update a specific todo provided by an id
+      description: This can only be done by the logged in user.
+      operationId: updateTodoById
+      parameters:
+      - name: id
+        in: path
+        description: the todo you want to update
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: todo object that needs to be updated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_FACH:
+                  type: integer
+                NAME:
+                  type: string
+                ERLEDIGT:
+                  type: boolean
+                WORKLOAD:
+                  type: integer
+                DATUM:
+                  type: string
+                  example: "2021-12-01 17:24:33"
+                TYP:
+                  type: string
+                OEFFENTLICH:
+                  type: boolean
+                NOTIZ:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: todo not found
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: delete a specific todo provided by an id
+      description: This can only be done by the logged in user.
+      operationId: deleteTodoById
+      parameters:
+      - name: id
+        in: path
+        description: the todo you want to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: todo not found
+          content: {}
+  /todo/{todoID}/addUser/:
+    post:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: add a user to a todo
+      operationId: addUserToTodo
+      parameters:
+      - name: todoID
+        in: path
+        description: the todo where the user should be added to
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: needs to provide the user id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ID_USER:
+                  type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: not allowed, todo is not public
+        404:
+          description: todo not found
+  /todo/{todoID}/removeUser/{userID}:
+    delete:
+      security:
+        - jwtAuth: []
+      tags:
+      - todo
+      summary: remove a user from a todo
+      description: This can only be done by the logged in user.
+      operationId: removeUserFromTodo
+      parameters:
+      - name: todoID
+        in: path
+        description: The todo where the user should be removed from
+        required: true
+        schema:
+          type: integer
+      - name: userID
+        in: path
+        description: the user that should be removed from the todo
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: no permission, or when user is owner of todo(use delete todo instead)
+        404:
+          description: todo not found
+  /degreeprogram:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - degreeprogram
+      summary: get all degree programs
+      operationId: getAllDegreePrograms
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DegreeProgram'
+  /degreeprogram/{id}:
+    get:
+      security:
+        - jwtAuth: []
+      tags:
+      - degreeprogram
+      summary: find a degree program by id
+      operationId: getDegreeProgramById
+      parameters:
+      - name: id
+        in: path
+        description: the degree program you want to get
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DegreeProgram'
+        400:
+          description: invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: degreeprogram not found
+          content: {}
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties: {}
+    Course:
+      type: object
+      properties:
+        ID_FACH:
+          type: integer
+        ID_STUDIENGANG:
+          type: integer
+        NAME:
+          type: string
+        SEMESTER:
+          type: integer
+        CP:
+          type: number
+          format: double
+    Todo:
+      type: object
+      properties:
+        ID_AUFGABE:
+          type: integer
+        ID_FACH:
+          type: integer
+        NAME:
+          type: string
+        ERLEDIGT:
+          type: boolean
+        WORKLOAD:
+          type: integer
+        DATUM:
+          type: string
+          format: date-time
+        TYP:
+          type: string
+        OEFFENTLICH:
+          type: boolean
+        NOTIZ:
+          type: string
+    Event:
+      type: object
+      properties:
+        ID_TERMIN:
+          type: integer
+        ID_FACH:
+          type: integer
+        START_DATUM_UHRZEIT:
+          type: string
+          format: date-time
+        END_DATUM_UHRZEIT:
+          type: string
+          format: date-time
+        NAME:
+          type: string
+        TYP:
+          type: string
+        OEFFENTLICH:
+          type: boolean
+        NOTIZ:
+          type: string
+    User:
+      type: object
+      properties:
+        ID_USER:
+          type: integer
+        ID_STUDIENGANG:
+          type: integer
+        USERNAME:
+          type: string
+        EMAIL:
+          type: string
+          format: email
+        XP:
+          type: integer
+        ROLLE:
+          type: string
+        TOKEN:
+          type: string
+    DegreeProgram:
+      type: object
+      properties:
+        ID_STUDIENGANG:
+          type: integer
+        NAME:
+          type: string
+        REGELSEMESTER:
+          type: integer
+  securitySchemes:
+    jwtAuth:            # arbitrary name for the security scheme
+      type: apiKey
+      in: header
+      name: x-access-token    # optional, arbitrary value for documentation purposes
